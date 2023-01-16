@@ -48,7 +48,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def create_activation_code(self):
-        self.activation_code = get_random_string(8,'NURS LOH , Epic , igrat ne umeet ')
+        self.activation_code = get_random_string(8,'NURSLOHepicigratneumeet')
 
     @property
     def average_rating(self):
