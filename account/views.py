@@ -4,6 +4,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from .serializers import RegisterSerializer
 from .models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+
 
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
@@ -30,3 +34,13 @@ def delete(request, email):
         return Response(status=403) # запрещаем
     user.delete()
     return Response('Успешно удалили акаунт', status=204)
+
+# выход из аккаунта (обнуление токена)
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request):
+        print(request.data)
+        user = request.user
+        Token.objects.filter(user=user).delete()
+        return Response('Succesfully logged out', status=201)
