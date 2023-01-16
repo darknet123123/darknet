@@ -49,3 +49,13 @@ class User(AbstractUser):
 
     def create_activation_code(self):
         self.activation_code = get_random_string(8,'NURS LOH , Epic , igrat ne umeet ')
+
+    @property
+    def average_rating(self):
+        ratings = self.ratings.all()
+        values = []
+        for rating in ratings:
+            values.append(rating.value)
+        if values:
+            return sum(values) / len(values)
+        return 0
