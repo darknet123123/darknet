@@ -30,7 +30,7 @@ def activate_view(request, activation_code):
 @api_view(['DELETE'])
 def delete(request, email):
     user = get_object_or_404(User, email=email)
-    if user.is_staff:
+    if not request.user.is_superuser:
         return Response(status=403) # запрещаем
     user.delete()
     return Response('Успешно удалили акаунт', status=204)
