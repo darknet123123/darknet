@@ -47,15 +47,15 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    def create_activation_code(self):
+        activ_code = get_random_string(8,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
+        self.activation_code = activ_code
+        self.save()
+        return activ_code
 
-    @staticmethod
-    def generate_activation_code():
-        from django.utils.crypto import get_random_string
-        code = get_random_string(8)
-        return code 
-
+    
     def set_activation_code(self):
-        code = self.generate_activation_code()
+        code = self.create_activation_code()
         if User.objects.filter(activation_code=code).exists():
             self.set_activation_code()
         else:
