@@ -3,10 +3,17 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from rest_framework.routers import DefaultRouter
 
 from .views import *
 
+
+router = DefaultRouter()
+router.register('users', UserViewSet)
+
+
 urlpatterns = [
+    path('', include(router.urls)),
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('register/', RegisterAPIView.as_view()),

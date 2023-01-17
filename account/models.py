@@ -73,16 +73,5 @@ class User(AbstractUser):
         return 0
 
 
-    def password_confirm(self):
-        from django.core.mail import send_mail
-        # activation_url = f'http://127.0.0.1:8000/user_account/password_confirm/{self.activation_code}'
-        activation_url = f'https://tektonik.herokuapp.com/user_account/password_confirm/{self.activation_code}'
-        message = f"""
-        Do you want to change password?
-        Confirm password changes: {activation_url}
-        """
-        send_mail("Please confirm your new changes", message, "apple_store@gmail.com", [self.email, ])
-
-
     def __str__(self) -> str:
         return f'{self.username} -> {self.email}'
