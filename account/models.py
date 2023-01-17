@@ -7,7 +7,6 @@ from django.utils.crypto import get_random_string
 
 from .tasks import send_activation_code
 
-# Create your models here.
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -18,6 +17,7 @@ class UserManager(BaseUserManager):
         user:User = self.model(email=email,**kwargs)
         user.set_password(password)
         user.create_activation_code()
+        user.country.upper()
         user.save(using=self.db)
         send_activation_code.delay(user.email,user.activation_code)
         return user
@@ -41,12 +41,16 @@ class User(AbstractUser):
     avatar = models.ImageField(null=True)
     is_active = models.BooleanField(default= False)
     activation_code = models.CharField(max_length=8, blank=True)
+    country = models.CharField(max_length=2)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS =   []
 
     objects = UserManager()
+    def __str__(self):
+        return self.email
 
+    
     def create_activation_code(self):
         activ_code = get_random_string(8,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
         self.activation_code = activ_code
@@ -72,6 +76,4 @@ class User(AbstractUser):
             return sum(values) / len(values)
         return 0
 
-
-    def __str__(self) -> str:
-        return f'{self.username} -> {self.email}'
+   
