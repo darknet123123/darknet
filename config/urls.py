@@ -37,6 +37,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('docs/', swagger_view.with_ui('swagger', cache_timeout=0)),
     path('account/', include('account.urls')),
+    path('chat/', include('chat.urls')),    
+
 ]
 
 
