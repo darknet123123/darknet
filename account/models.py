@@ -47,17 +47,15 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    # def create_activation_code(self):
-    #     self.activation_code = get_random_string(8,'NURSLOHepicigratneumeet')
+    def create_activation_code(self):
+        activ_code = get_random_string(8,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
+        self.activation_code = activ_code
+        self.save()
+        return activ_code
 
-    @staticmethod
-    def generate_activation_code():
-        from django.utils.crypto import get_random_string
-        code = get_random_string(8)
-        return code 
-
+    
     def set_activation_code(self):
-        code = self.generate_activation_code()
+        code = self.create_activation_code()
         if User.objects.filter(activation_code=code).exists():
             self.set_activation_code()
         else:
@@ -73,17 +71,6 @@ class User(AbstractUser):
         if values:
             return sum(values) / len(values)
         return 0
-
-
-    def password_confirm(self):
-        from django.core.mail import send_mail
-        # activation_url = f'http://127.0.0.1:8000/user_account/password_confirm/{self.activation_code}'
-        activation_url = f'https://tektonik.herokuapp.com/user_account/password_confirm/{self.activation_code}'
-        message = f"""
-        Do you want to change password?
-        Confirm password changes: {activation_url}
-        """
-        send_mail("Please confirm your new changes", message, "apple_store@gmail.com", [self.email, ])
 
 
     def __str__(self) -> str:
