@@ -1,8 +1,9 @@
 from rest_framework import serializers
-
+from django.core.mail import send_mail
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from config.settings import EMAIL_HOST_USER
 from .models import User
-from .tasks import password_confirm
 
 class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(min_length=4,required = True)
@@ -33,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['email', 'username', 'avatar', 'country', 'is_active', 'is_superuser', 'date_joined']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -54,23 +55,6 @@ class LoginSerializer(TokenObtainPairView):
     pass
 
 
-class ForgotSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise serializers.ValidationError('Such email does not found')
-        return attrs
-    
-    def save(self):
-        data = self.validated_data
-        user = User.objects.get(**data)
-        user.set_activation_code()
-        password_confirm.delay(user.email, user.activation_code)
-        
 
 class ChangePasswordSerializer(serializers.Serializer):
    
@@ -80,3 +64,4 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(
         required=True, min_length=8, write_only=True
     )
+

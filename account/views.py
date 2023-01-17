@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from django.shortcuts import render, get_object_or_404
+from rest_framework.permissions import IsAdminUser
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,7 +15,7 @@ from django.shortcuts import redirect
 
 from .models import User
 from .serializers import *
-from .permissions import IsAdmin
+from .permissions import IsAdminOrAuthor
 
 
 from rest_framework.generics import get_object_or_404, GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
@@ -34,11 +35,12 @@ class RegisterAPIView(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdmin, ]
+    permission_classes = [IsAdminUser,]
     
 
     def get_serializer_context(self):
         return {'request':self.request}
+
 
 
 # активация аккаунта
@@ -54,6 +56,8 @@ def activate_view(request, activation_code):
 @api_view(['DELETE'])
 def delete(request, email):
     user = get_object_or_404(User, email=email)
+    if request.user.email == email:
+        return Response("You can't delete yourself", status=405)
     if not request.user.is_superuser:
         return Response(status=403) # запрещаем
     user.delete()
@@ -82,13 +86,12 @@ class LogoutView(APIView):
         Token.objects.filter(user=user).delete()
         return Response('Successfully logged out', status=status.HTTP_200_OK)
 
-
 class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
-    permission_classes = [IsAuthenticated, ] 
+    permission_classes = [IsAdminOrAuthor, ] 
 
-    # @swagger_auto_schema(request_body=ChangePasswordSerializer)
+
     def update(self, request, *args, **kwargs):
         object = request.user
         serializer = self.get_serializer(data=request.data)
@@ -110,16 +113,10 @@ class ChangePasswordView(UpdateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ForgotPasswordView(APIView):
-    # @swagger_auto_schema(request_body=ForgotSerializer)
 
-    def post(self, request):
-        data = request.POST
-        serializer = ForgotSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            message = "Please, confirm your new password"
-            return Response(message)
+
+
+
 
 class NewPasswordView(APIView):
     def get(self, request, activation_code):

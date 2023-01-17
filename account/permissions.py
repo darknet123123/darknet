@@ -12,8 +12,6 @@ class IsAdminOrAuthor(BasePermission):
             request.user.is_staff == True 
         )
 
-class IsAdmin(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff == True
+
 
 
