@@ -38,11 +38,11 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50)
-    avatar = models.ImageField(null=True)
+    avatar = models.ImageField(blank=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
     country = models.CharField(max_length=2)
-    balance = models.DecimalField(default=1000.0, max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=10)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS =   []

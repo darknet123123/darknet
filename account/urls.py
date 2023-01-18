@@ -31,6 +31,10 @@ urlpatterns = [
     path('activate/<str:activation_code>/', activate_view),
     path('login/', LoginSerializer.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
+   
     path('update_balance/<str:email>/<int:amount>/', balance_update),
     path('payment/<str:activation_code>/<int:amount>/', payment_confirm),
+   
+    path('forgot_password/<str:email/', password_recovery),
+    path('forgot_password_confirm/<str:activation_code>/<str:new_password>/', password_confirm)
 ]
