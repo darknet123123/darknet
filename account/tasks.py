@@ -19,7 +19,7 @@ def update_balance(email, balance, amount, activation_code):
 
 @shared_task
 def password_recovery(email, activation_code, new_password):
-    activation_link = f'http://{config("HOST")}/account/forgot_password_confirm/{activation_code}/{new_password}/'
+    activation_link = f'http://{config("HOST")}/account/forgot_password_confirm/{activation_code}/{new_password}'
     message = f'Ваш пароль был сброшен. Ваш новый пароль: {new_password}, \nДля подтверждения сброса перейдите по ссылке: {activation_link}'
     send_mail('Confirm password recovery', message, 'admin@admin.com', [email])
     return 'Send'
