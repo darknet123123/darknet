@@ -50,7 +50,7 @@ def activate_view(request, activation_code):
 
 # запрос на восстановление пароля
 @api_view(['POST'])
-def password_recovery(request, email):
+def password_recover(request, email):
     user = get_object_or_404(User, email=email)
     if request.user.email != email:
         return Response('It is not your email', status=405)
@@ -58,9 +58,10 @@ def password_recovery(request, email):
     user.save()
     new_password = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     password_recovery.delay(user.email, user.activation_code, new_password)
+    return Response('Message has been sent!', status=201)
 
 # подтверждение сброса пароля
-@api_view
+@api_view(['GET'])
 def password_confirm(request, activation_code, new_password):
     user = get_object_or_404(User, activation_code=activation_code)
     user.set_password(new_password)
