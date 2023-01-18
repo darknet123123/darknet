@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
         user.create_activation_code()
         user.country.upper()
         user.save(using=self.db)
-        send_activation_code.delay(user.email,user.activation_code)
+        send_activation_code.delay(user.email, user.activation_code)
         return user
 
     def create_superuser(self,email,password,**kwargs):
@@ -39,9 +39,10 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50)
     avatar = models.ImageField(null=True)
-    is_active = models.BooleanField(default= False)
+    is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
     country = models.CharField(max_length=2)
+    balance = models.DecimalField(default=1000.0, max_digits=10, decimal_places=2)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS =   []

@@ -12,10 +12,14 @@ from rest_framework.authtoken.views import  ObtainAuthToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import api_view
 from django.shortcuts import redirect
+from drf_yasg.utils import swagger_auto_schema
+from django.utils.crypto import get_random_string
+
 
 from .models import User
 from .serializers import *
 from .permissions import IsAdminOrAuthor
+from .tasks import update_balance
 
 
 from rest_framework.generics import get_object_or_404, GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
@@ -51,7 +55,35 @@ def activate_view(request, activation_code):
     user.is_active = True # activate user
     user.activation_code = '' # delete the activated code
     user.save()
-    return Response('Successfuly activated the account', 200)
+    return Response('Succesfuly activated the account', 200)
+
+
+# подтверждение оплаты
+@api_view(['GET'])
+def payment_confirm(request, activation_code, amount):
+    user = get_object_or_404(User, activation_code=activation_code)
+    user.balance += amount
+    user.activation_code = ''
+    user.save()
+    return Response('Payment confirmed!')
+
+
+
+# пополнить баланс
+@api_view(['POST'])
+def balance_update(request, email, amount):
+    account = User.objects.filter(email=email)
+    if not account:
+        return Response('This user does not exist', status=405)
+    user = get_object_or_404(User, email=email)
+    if request.user.email != email:
+        return Response('It is not your email', status=405)
+    user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
+    user.save()
+    update_balance.delay(user.email, user.balance, amount, user.activation_code)
+    return Response('Payment confirmation have been sent to your email', status=201)
+    
+
 
 # удаление пользователей
 @api_view(['DELETE'])
@@ -62,7 +94,7 @@ def delete(request, email):
     if not request.user.is_superuser:
         return Response(status=403) # запрещаем
     user.delete()
-    return Response('Успешно удалили акаунт', status=204)
+    return Response('Account has been succesfully deleted', status=204)
 
 # выход из аккаунта (обнуление токена)
 class LogoutView(APIView):
@@ -113,11 +145,6 @@ class ChangePasswordView(UpdateAPIView):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
 
 class NewPasswordView(APIView):
     def get(self, request, activation_code):
