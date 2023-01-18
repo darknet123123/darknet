@@ -25,6 +25,7 @@ from rest_framework.generics import get_object_or_404, GenericAPIView, ListAPIVi
 
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
+    @swagger_auto_schema(request_body=RegisterSerializer())
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
