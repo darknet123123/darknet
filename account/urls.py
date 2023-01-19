@@ -8,6 +8,7 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 
+
 router = DefaultRouter()
 router.register('users', UserViewSet)
 
@@ -19,6 +20,10 @@ update ---------> users/id/ PUT
 partial-update -> users/id/ PATCH
 destroy --------> users/id/ DELETE
 '''
+
+
+
+
 
 
 urlpatterns = [
