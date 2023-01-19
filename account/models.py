@@ -36,7 +36,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50, default='Anonymous User')
     avatar = models.ImageField(blank=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)

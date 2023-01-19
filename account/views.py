@@ -46,6 +46,8 @@ def get_code(request):
 @api_view(['GET'])
 def user_data(request, email):
     user = get_object_or_404(User, email=email)
+    if not request.user.is_authenticated:
+        return Response('You have to register to get this data!', status=405)
     if request.user.email != email:
         return Response('It is not your email', status=405)
     res = LittleSerializer(user).data

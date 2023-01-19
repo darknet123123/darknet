@@ -34,7 +34,8 @@ class LittleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['email', 'username', 'avatar', 'balance', 'country']
+        fields = ['email', 'username', 'avatar', 'balance', 'country', 'data_joined']
+        
 
 
 class UserSerializer(serializers.ModelSerializer):
