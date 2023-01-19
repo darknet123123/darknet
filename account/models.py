@@ -77,13 +77,13 @@ class User(AbstractUser):
         return 0
 
 
-# class Code(models.Model):
-#     code = models.CharField(max_length=10)
+class Code(models.Model):
+    code = models.CharField(max_length=10)
 
-# @api_view(['POST'])
-# def create_code(request):
-#     codes = [Code(code=get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')) for i in range(100)]
-#     Code.objects.bulk_create(codes)
+    def __str__(self):
+        return self.code
+
+
 
 # import requests
 # requests.get('http://127.0.0.1:8000/account/register/')
