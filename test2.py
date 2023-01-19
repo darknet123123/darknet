@@ -1,3 +1,7 @@
-from test import gg
+from account.models import Code
 
-print(gg)
+answer = input('Введите код: ')
+if Code.objects.filter(code=answer).exists():
+    print('yes')
+else:
+    print('no')

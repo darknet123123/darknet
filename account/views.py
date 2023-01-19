@@ -40,15 +40,36 @@ def get_code(request):
 
 
 
+
+
+# управление аккаунтом (User)
+@api_view(['GET'])
+def user_data(request, email):
+    user = get_object_or_404(User, email=email)
+    if request.user.email != email:
+        return Response('It is not your email', status=405)
+    res = LittleSerializer(user).data
+    return Response(res, status=201)
+    
+    
+
+
+
+
+
+
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())
     def post(self, request):
+        print('DATA', request.data)
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(f'To complete registration, follow the link sent', status=201)
+        return Response('To complete registration, follow the link sent', status=201)
         
+
+
 
 
 
@@ -64,12 +85,12 @@ def activate_view(request, activation_code):
 
 
 
-# запрос на восстановление пароля
+
+
+# запрос на сброс пароля
 @api_view(['POST'])
 def password_recover(request, email):
     user = get_object_or_404(User, email=email)
-    if request.user.email != email:
-        return Response('It is not your email', status=405)
     user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     user.save()
     new_password = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
@@ -85,6 +106,8 @@ def password_confirm(request, activation_code, new_password):
     user.activation_code = ''
     user.save()
     return Response('Password has been changed!', status=201)
+
+
 
 
 
@@ -111,7 +134,11 @@ def payment_confirm(request, activation_code, amount):
 
 
 
-# удаление пользователей
+
+
+
+
+# удаление пользователей (Admin)
 @api_view(['DELETE'])
 def delete(request, email):
     user = get_object_or_404(User, email=email)
@@ -121,6 +148,10 @@ def delete(request, email):
         return Response(status=403) 
     user.delete()
     return Response('Account has been succesfully deleted', status=204)
+
+
+
+
 
 
 
@@ -137,7 +168,7 @@ class LogoutView(APIView):
 
 
 
-
+# управление юзерами (Admin)
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -147,10 +178,15 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_context(self):
         return {'request':self.request}
 
+
+
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
 
  
+
+
+
 class LogoutView(APIView):
     permission_classes=[IsAuthenticated, ]
     
@@ -158,6 +194,8 @@ class LogoutView(APIView):
         user=request.user
         Token.objects.filter(user=user).delete()
         return Response('Successfully logged out', status=status.HTTP_200_OK)
+
+
 
 class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
