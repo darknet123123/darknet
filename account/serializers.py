@@ -27,7 +27,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-
+# class LittleSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = User
+#         fields = ['username', 'avatar', ]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -54,15 +58,7 @@ class CodeSerializer(serializers.ModelSerializer):
         model = Code
         fields = '__all__'
 
-    # def create(self, code, **data):
-    #     print(data)
-        # res = Code.objects.create(**data)
-        # print(res)
-        # return res
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        return representation
+    
 
 
 
