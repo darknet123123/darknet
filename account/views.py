@@ -38,16 +38,18 @@ def get_code(request):
 
 
 
+
+
+
+
 # управление аккаунтом (User)
-class UserAPIView(APIView):
-    permission_classes = [IsAuthenticated, ]
-    
-    def get(request, email):
-        user = get_object_or_404(User, email=email)
-        if request.user.email != email:
-            return Response('It is not your email', status=405)
-        res = LittleSerializer(user)
-        return Response(res, status=201)
+@api_view(['GET'])
+def user_data(request, email):
+    user = get_object_or_404(User, email=email)
+    if request.user.email != email:
+        return Response('It is not your email', status=405)
+    res = LittleSerializer(user).data
+    return Response(res, status=201)
     
     
 
@@ -60,10 +62,11 @@ class UserAPIView(APIView):
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())
     def post(self, request):
+        print('DATA', request.data)
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(f'To complete registration, follow the link sent', status=201)
+        return Response('To complete registration, follow the link sent', status=201)
         
 
 
