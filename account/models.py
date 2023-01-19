@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
@@ -77,4 +76,14 @@ class User(AbstractUser):
             return sum(values) / len(values)
         return 0
 
-   
+
+# class Code(models.Model):
+#     code = models.CharField(max_length=10)
+
+# @api_view(['POST'])
+# def create_code(request):
+#     codes = [Code(code=get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')) for i in range(100)]
+#     Code.objects.bulk_create(codes)
+
+# import requests
+# requests.get('http://127.0.0.1:8000/account/register/')
