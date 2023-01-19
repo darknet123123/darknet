@@ -32,7 +32,7 @@ def get_code(request):
     code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     coder = Code.objects.create(code=code)
     codes = Code.objects.all()
-    return Response(f'Code : {coder}, Codes : {codes}', status=201)
+    return Response(f'Codes : {codes}', status=201)
 
 
 
@@ -68,10 +68,6 @@ class RegisterAPIView(APIView):
         serializer.save()
         return Response('To complete registration, follow the link sent', status=201)
         
-
-
-
-
 
 # активация кода
 @api_view(['GET'])
