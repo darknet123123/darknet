@@ -21,8 +21,18 @@ from .tasks import update_balance, password_recovery
 
 
 from rest_framework.generics import get_object_or_404, UpdateAPIView
+# codes = [Code(code=get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')) for i in range(100)]
 
 
+
+@api_view(['POST'])
+def get_code(request):
+    if not request.user.is_authenticated:
+        return Response('You have to be authenticated!', status=403) 
+    code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
+    coder = Code.objects.create(code=code)
+    codes = Code.objects.all()
+    return Response(f'Code : {coder}, Codes : {codes}', status=201)
 
 
 
@@ -42,7 +52,7 @@ class RegisterAPIView(APIView):
 
 
 
-# активация аккаунта
+# активация кода
 @api_view(['GET'])
 def activate_view(request, activation_code):
     user = get_object_or_404(User, activation_code=activation_code)
@@ -108,7 +118,7 @@ def delete(request, email):
     if request.user.email == email:
         return Response("You can't delete yourself", status=405)
     if not request.user.is_superuser:
-        return Response(status=403) # запрещаем
+        return Response(status=403) 
     user.delete()
     return Response('Account has been succesfully deleted', status=204)
 

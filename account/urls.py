@@ -28,18 +28,22 @@ destroy --------> users/id/ DELETE
 
 urlpatterns = [
     path('', include(router.urls)),
+
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
-    path('register/', RegisterAPIView.as_view()),
-    path('delete/<str:email>/', delete),
     path('logout/', LogoutView.as_view()),
+    
+    path('register/', RegisterAPIView.as_view()),
+    
+    path('delete/<str:email>/', delete),
     path('activate/<str:activation_code>/', activate_view),
-    path('login/', LoginSerializer.as_view()),
-    path('change_password/', ChangePasswordView.as_view()),
+
+    path('get_code/', get_code),
    
     path('update_balance/<str:email>/<int:amount>/', balance_update),
     path('payment/<str:activation_code>/<int:amount>/', payment_confirm),
    
+    path('change_password/', ChangePasswordView.as_view()),
     path('forgot_password/<str:email>/', password_recover),
     path('forgot_password_confirm/<str:activation_code>/<str:new_password>/', password_confirm)
 ]
