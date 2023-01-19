@@ -34,7 +34,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view()),
     path('login/', LoginSerializer.as_view()),
     
-    path('<str:email>/', UserAPIView.as_view()),
+    path('user/<str:email>/', user_data),
 
     path('register/', RegisterAPIView.as_view()),
     
