@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from config.settings import EMAIL_HOST_USER
-from .models import User
+from .models import User, Code
 
 class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(min_length=4,required = True)
@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'avatar', 'country', 'balance', 'is_active', 'is_superuser', 'date_joined']
+        fields = ['id', 'email', 'username', 'avatar', 'country', 'balance', 'is_active', 'is_superuser', 'date_joined']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -47,6 +47,22 @@ class UserSerializer(serializers.ModelSerializer):
 
         return representation
 
+
+class CodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Code
+        fields = '__all__'
+
+    # def create(self, code, **data):
+    #     print(data)
+        # res = Code.objects.create(**data)
+        # print(res)
+        # return res
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        return representation
 
 
 
