@@ -1,4 +1,3 @@
-import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from django.shortcuts import render, get_object_or_404
@@ -21,7 +20,14 @@ from .permissions import IsAdminOrAuthor
 from .tasks import update_balance, password_recovery
 
 
-from rest_framework.generics import get_object_or_404, GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
+from rest_framework.generics import get_object_or_404, UpdateAPIView
+
+
+
+
+
+
+
 
 
 # Регистрация аккаунта 
@@ -31,7 +37,7 @@ class RegisterAPIView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response('To complete registration, follow the link sent', status=201)
+        return Response(f'To complete registration, follow the link sent', status=201)
         
 
 
