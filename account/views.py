@@ -24,7 +24,7 @@ from rest_framework.generics import get_object_or_404, UpdateAPIView
 # codes = [Code(code=get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')) for i in range(100)]
 
 
-
+# Получение кода
 @api_view(['POST'])
 def get_code(request):
     if not request.user.is_authenticated:
