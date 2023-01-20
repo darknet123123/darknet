@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '34.125.82.176', 'localhost','34.171.58.32',]
+ALLOWED_HOSTS = ['127.0.0.1', '34.125.82.176', '34.122.138.182', 'localhost','34.171.58.32',]
 
 
 
@@ -44,16 +44,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken', 
+    'corsheaders',
     
     'account',
     'main',
     'chat',
+    # 'auction',
     'review',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -162,6 +165,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 3
 }
 
 
