@@ -5,6 +5,8 @@ token = config('TOKEN')
 
 bot = telebot.TeleBot(token)
 
+# secret_invate = ['qwertyuiopkjhgfdsaASDFGHMWWFGN', 'poiouiygjbhoiuyuggtgvjbhk','uhuyughjko[p[hj']
+
 mythology_riddles = [
     {"question": "What was the name of the three-headed dog that guarded the entrance to the underworld?", 
     "answer": "Cerberus",
