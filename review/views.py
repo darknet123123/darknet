@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions
-from .models import Product, Like, Rating, Comment, Reply, Favorite
+from .models import Like, Rating, Comment, Reply, Favorite
 from .serializers import LikeSerializer, RatingSerializer, CommentSerializer, ReplySerializer, FavoriteSerializer
 
 class LikeViewSet(viewsets.ModelViewSet):
