@@ -12,9 +12,10 @@ from rest_framework.decorators import api_view
 from django.shortcuts import redirect
 from drf_yasg.utils import swagger_auto_schema
 from django.utils.crypto import get_random_string
+from decouple import config
 
 
-from .models import User
+from .models import User, Code, CodeLink
 from .serializers import *
 from .permissions import IsAdminOrAuthor
 from .tasks import update_balance, password_recovery
@@ -31,28 +32,29 @@ def get_code(request):
         return Response('You have to be authenticated!', status=403) 
     code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     coder = Code.objects.create(code=code)
-    codes = Code.objects.all()
-    return Response(f'Codes : {codes}', status=201)
+    codes = Code.objects.first()
+    return Response(f'Code : {codes.code}', status=201)
 
 
-
-
-
-
-
-
-
-# управление аккаунтом (User)
+# проверка кода (тг бот)
+@api_view(['POST'])
+def check_code(request):
+    code = request.data.get('code')
+    print(code)
+    bot_code = request.data.get('bot_code')
+    if bot_code != config('TOKEN'):
+        return Response('Access denied!', status=405)
+    code = Code.objects.filter(code=code)
+    if code.exists():
+        code.delete()
+        return Response('Yep', status=200)
+    
+# получение кода регистрации (бот)
 @api_view(['GET'])
-def user_data(request, email):
-    user = get_object_or_404(User, email=email)
-    if request.user.email != email:
-        return Response('It is not your email', status=405)
-    res = LittleSerializer(user).data
-    return Response(res, status=201)
-    
-    
-
+def get_code_link(request):
+    code = CodeLink.objects.first()
+    print(code)
+    return Response(code.code, status=200)
 
 
 
@@ -61,14 +63,14 @@ def user_data(request, email):
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())
-    def post(self, request):
-        print('DATA', request.data)
+    def post(self, request, code):
+        code = get_object_or_404(CodeLink, code=code)
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        code.delete()
         return Response('To complete registration, follow the link sent', status=201)
         
-
 # активация кода
 @api_view(['GET'])
 def activate_view(request, activation_code):
@@ -77,6 +79,54 @@ def activate_view(request, activation_code):
     user.activation_code = '' # delete the activated code
     user.save()
     return Response('Succesfuly activated the account', 200)
+
+
+
+
+
+
+# управление юзерами (Admin)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser,]
+    
+    def get_serializer_context(self):
+        return {'request':self.request}
+
+
+
+
+
+
+# управление аккаунтом (User)
+class UserAPIView(APIView):
+    permission_classes = [IsAuthenticated,]
+    
+    def get(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        ser = GetSerializer(user)
+        return Response(ser.data, status=201)
+    
+    def patch(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        ser = PatchSerializer(user, data=request.data, partial=True)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data, status=204)
+
+    def delete(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        user.delete()
+        return Response('Succesfully deleted!', status=205)
+    
+
 
 
 
@@ -134,23 +184,6 @@ def payment_confirm(request, activation_code, amount):
 
 
 
-# удаление пользователей (Admin)
-@api_view(['DELETE'])
-def delete(request, email):
-    user = get_object_or_404(User, email=email)
-    if request.user.email == email:
-        return Response("You can't delete yourself", status=405)
-    if not request.user.is_superuser:
-        return Response(status=403) 
-    user.delete()
-    return Response('Account has been succesfully deleted', status=204)
-
-
-
-
-
-
-
 # выход из аккаунта (обнуление токена)
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated, ]
@@ -164,25 +197,10 @@ class LogoutView(APIView):
 
 
 
-# управление юзерами (Admin)
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAdminUser,]
-    
-
-    def get_serializer_context(self):
-        return {'request':self.request}
 
 
 
-class LoginView(TokenObtainPairView):
-    serializer_class = LoginSerializer
-
- 
-
-
-
+# выход из аккаунта
 class LogoutView(APIView):
     permission_classes=[IsAuthenticated, ]
     
@@ -193,11 +211,12 @@ class LogoutView(APIView):
 
 
 
+
+# смена пароля
 class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = [IsAdminOrAuthor, ] 
-
 
     def update(self, request, *args, **kwargs):
         object = request.user
@@ -215,9 +234,7 @@ class ChangePasswordView(UpdateAPIView):
                 'code': status.HTTP_200_OK,
                 'message': 'Password updated successfully'
             }
-
             return Response(response)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

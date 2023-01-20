@@ -4,13 +4,13 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.crypto import get_random_string
 
 
-from .tasks import send_activation_code
 
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self,email,password,**kwargs):
+        from .tasks import send_activation_code
         assert email, 'Email is required'
         email = self.normalize_email(email)
         user:User = self.model(email=email,**kwargs)
@@ -36,20 +36,20 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=50)
-    avatar = models.ImageField(blank=True)
+    username = models.CharField(max_length=50, default='Anonymous User')
+    avatar = models.ImageField(blank=True, upload_to='avatars/')
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
-    country = models.CharField(max_length=2)
+    country = models.CharField(max_length=2, default='World')
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=10)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS =   []
 
     objects = UserManager()
+
     def __str__(self):
         return self.email
-
     
     def create_activation_code(self):
         activ_code = get_random_string(8,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
@@ -83,6 +83,11 @@ class Code(models.Model):
     def __str__(self):
         return self.code
 
+class CodeLink(models.Model):
+    code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.code
 
 
 # import requests
