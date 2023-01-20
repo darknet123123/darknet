@@ -14,12 +14,9 @@ mythology_riddles = [
     ['qwertyuiopkjhgfdsaASDFGHMWWFGN', 'poiouiygjbhoiuyuggtgvjbhk','uhuyughjko[p[hj'],
 ]
 
-
 @bot.message_handler(commands=['start', 'riddle'])
 def send_riddle(message):
-    riddle = mythology_riddles
-    bot.send_message(message.chat.id, riddle[0]["question"])
-
+    bot.send_message(message.chat.id, mythology_riddles[0]["question"])
 
 @bot.message_handler(content_types=['text'])
 def check_answer(message):
@@ -32,18 +29,7 @@ def check_answer(message):
         return
             
     else:
-        bot.send_message(message.chat.id, "Incorrect, please try again.")
-
-
-# @bot.message_handler(content_types=['text'])
-# def secret(message):
-
-#     for secret in secret_invate: 
-#         print(secret)
-#         if message == secret:
-#             bot.send_message(message.chat.id, "Correct! " + 'https://en.wikipedia.org/wiki/Cerberus')
-#             return
-#     bot.send_message(message.chat.id, "Incorrect, please try again.")
+        bot.send_message(message.chat.id, "Incorrect, please try again.")   
 
 bot.polling()
 
