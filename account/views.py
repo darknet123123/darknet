@@ -12,9 +12,10 @@ from rest_framework.decorators import api_view
 from django.shortcuts import redirect
 from drf_yasg.utils import swagger_auto_schema
 from django.utils.crypto import get_random_string
+from decouple import config
 
 
-from .models import User
+from .models import User, Code, CodeLink
 from .serializers import *
 from .permissions import IsAdminOrAuthor
 from .tasks import update_balance, password_recovery
@@ -31,21 +32,41 @@ def get_code(request):
         return Response('You have to be authenticated!', status=403) 
     code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     coder = Code.objects.create(code=code)
-    codes = Code.objects.all()
-    return Response(f'Codes : {codes}', status=201)
+    codes = Code.objects.first()
+    return Response(f'Code : {codes.code}', status=201)
 
 
+# проверка кода (тг бот)
+@api_view(['POST'])
+def check_code(request):
+    code = request.data.get('code')
+    print(code)
+    bot_code = request.data.get('bot_code')
+    if bot_code != config('TOKEN'):
+        return Response('Access denied!', status=405)
+    code = Code.objects.filter(code=code)
+    if code.exists():
+        code.delete()
+        return Response('Yep', status=200)
+    
+# получение кода регистрации (бот)
+@api_view(['GET'])
+def get_code_link(request):
+    code = CodeLink.objects.first()
+    print(code)
+    return Response(code.code, status=200)
 
 
 
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())
-    def post(self, request):
-        print('DATA', request.data)
+    def post(self, request, code):
+        code = get_object_or_404(CodeLink, code=code)
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        code.delete()
         return Response('To complete registration, follow the link sent', status=201)
         
 # активация кода

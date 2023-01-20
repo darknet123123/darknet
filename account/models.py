@@ -4,13 +4,13 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.crypto import get_random_string
 
 
-from .tasks import send_activation_code
 
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self,email,password,**kwargs):
+        from .tasks import send_activation_code
         assert email, 'Email is required'
         email = self.normalize_email(email)
         user:User = self.model(email=email,**kwargs)
@@ -83,6 +83,11 @@ class Code(models.Model):
     def __str__(self):
         return self.code
 
+class CodeLink(models.Model):
+    code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.code
 
 
 # import requests

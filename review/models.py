@@ -8,6 +8,11 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
+    
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
 
 class Comment(models.Model):
     product = models.ForeignKey(Product, related_name='comments', on_delete=models.CASCADE)########################
@@ -20,12 +25,14 @@ class Comment(models.Model):
         return f'{self.author} : {self.body}'
 
 
+
 class LikeComment(models.Model):
     author = models.ForeignKey(User, related_name='comment_likes', on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.author} -> {self.comment}"
+
 
 class Rating(models.Model):
     product= models.ForeignKey(Product, related_name='ratings', on_delete=models.CASCADE)############################
@@ -58,7 +65,6 @@ class Comment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
 
 class Reply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
