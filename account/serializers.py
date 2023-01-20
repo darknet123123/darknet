@@ -5,6 +5,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from config.settings import EMAIL_HOST_USER
 from .models import User, Code
 
+
+'''Register'''
 class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(min_length=4,required = True)
     
@@ -26,18 +28,28 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+'''Register'''
 
 
 
 
-class LittleSerializer(serializers.ModelSerializer):
-    
+'''User'''
+class PatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'username', 'avatar', 'balance', 'country', 'data_joined']
-        
+        fields = ['username', 'avatar', 'country']
+
+class GetSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'avatar', 'balance', 'country']
+'''User'''
 
 
+
+
+
+'''Admin'''
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -54,24 +66,23 @@ class UserSerializer(serializers.ModelSerializer):
         # representation['rating'] = instance.average_rating
 
         return representation
+'''Admin'''
 
 
+
+
+'''Invite Code'''
 class CodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Code
         fields = '__all__'
-
-    
-
-
-
-class LoginSerializer(TokenObtainPairView):
-
-    pass
+'''Invite Code'''
 
 
 
+
+'''Change Password'''
 class ChangePasswordSerializer(serializers.Serializer):
    
     model = User
@@ -80,4 +91,5 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(
         required=True, min_length=8, write_only=True
     )
+'''Change Password'''
 

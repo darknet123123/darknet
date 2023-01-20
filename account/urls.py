@@ -33,11 +33,10 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view()),
     path('logout/', LogoutView.as_view()),
     
-    path('user/<str:email>/', user_data),
+    path('user/<str:email>/', UserAPIView.as_view()),
 
     path('register/', RegisterAPIView.as_view()),
     
-    path('delete/<str:email>/', delete),
     path('activate/<str:activation_code>/', activate_view),
 
     path('get_code/', get_code),

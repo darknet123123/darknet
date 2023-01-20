@@ -38,28 +38,6 @@ def get_code(request):
 
 
 
-
-
-
-
-# управление аккаунтом (User)
-@api_view(['GET'])
-def user_data(request, email):
-    user = get_object_or_404(User, email=email)
-    if not request.user.is_authenticated:
-        return Response('You have to register to get this data!', status=405)
-    if request.user.email != email:
-        return Response('It is not your email', status=405)
-    res = LittleSerializer(user).data
-    return Response(res, status=201)
-    
-    
-
-
-
-
-
-
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())
@@ -70,7 +48,6 @@ class RegisterAPIView(APIView):
         serializer.save()
         return Response('To complete registration, follow the link sent', status=201)
         
-
 # активация кода
 @api_view(['GET'])
 def activate_view(request, activation_code):
@@ -79,6 +56,54 @@ def activate_view(request, activation_code):
     user.activation_code = '' # delete the activated code
     user.save()
     return Response('Succesfuly activated the account', 200)
+
+
+
+
+
+
+# управление юзерами (Admin)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser,]
+    
+    def get_serializer_context(self):
+        return {'request':self.request}
+
+
+
+
+
+
+# управление аккаунтом (User)
+class UserAPIView(APIView):
+    permission_classes = [IsAuthenticated,]
+    
+    def get(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        ser = GetSerializer(user)
+        return Response(ser.data, status=201)
+    
+    def patch(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        ser = PatchSerializer(user, data=request.data, partial=True)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data, status=204)
+
+    def delete(self, request, email):
+        user = get_object_or_404(User, email=email)
+        if request.user.email != email:
+            return Response('It is not your email', status=405)
+        user.delete()
+        return Response('Succesfully deleted!', status=205)
+    
+
 
 
 
@@ -136,23 +161,6 @@ def payment_confirm(request, activation_code, amount):
 
 
 
-# удаление пользователей (Admin)
-@api_view(['DELETE'])
-def delete(request, email):
-    user = get_object_or_404(User, email=email)
-    if request.user.email == email:
-        return Response("You can't delete yourself", status=405)
-    if not request.user.is_superuser:
-        return Response(status=403) 
-    user.delete()
-    return Response('Account has been succesfully deleted', status=204)
-
-
-
-
-
-
-
 # выход из аккаунта (обнуление токена)
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated, ]
@@ -166,25 +174,10 @@ class LogoutView(APIView):
 
 
 
-# управление юзерами (Admin)
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAdminUser,]
-    
-
-    def get_serializer_context(self):
-        return {'request':self.request}
 
 
 
-class LoginView(TokenObtainPairView):
-    serializer_class = LoginSerializer
-
- 
-
-
-
+# выход из аккаунта
 class LogoutView(APIView):
     permission_classes=[IsAuthenticated, ]
     
@@ -195,11 +188,12 @@ class LogoutView(APIView):
 
 
 
+
+# смена пароля
 class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = [IsAdminOrAuthor, ] 
-
 
     def update(self, request, *args, **kwargs):
         object = request.user
@@ -217,9 +211,7 @@ class ChangePasswordView(UpdateAPIView):
                 'code': status.HTTP_200_OK,
                 'message': 'Password updated successfully'
             }
-
             return Response(response)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
