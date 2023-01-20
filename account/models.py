@@ -40,7 +40,7 @@ class User(AbstractUser):
     avatar = models.ImageField(blank=True, upload_to='avatars/')
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
-    country = models.CharField(max_length=2, default='World')
+    country = models.CharField(max_length=10000, default='World')
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=10)
 
     USERNAME_FIELD = 'email'
