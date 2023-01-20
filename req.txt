@@ -9,3 +9,4 @@ redis
 gunicorn 
 django-cors-headers
 pillow
+python-telegram-bot
