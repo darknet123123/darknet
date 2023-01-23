@@ -162,13 +162,13 @@ def password_confirm(request, activation_code, new_password):
 def balance_update(request):
     if not request.user.is_authenticated:
         return Response(status=401)
-    if not requset.data.get('balance'):
+    if not request.data.get('balance'):
         return Response('balance is required', status=400)
     user = request.user
     user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     user.save()
     update_balance.delay(user.email, user.balance, request.data.get('balance'), user.activation_code)
-    return Response('Payment confirmation have been sent to your email', status=201)
+    return Response('Payment confirmation have been sent to your email', status=201))
     
 # подтверждение пополнения
 @api_view(['GET'])
