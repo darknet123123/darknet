@@ -44,7 +44,7 @@ urlpatterns = [
     
     path('activate/<str:activation_code>/', activate_view),
 
-    path('update_balance/<str:email>/<int:amount>/', balance_update),
+    path('update_balance/', balance_update),
     path('payment/<str:activation_code>/<int:amount>/', payment_confirm),
    
     path('change_password/', ChangePasswordView.as_view()),
