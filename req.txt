@@ -1,0 +1,13 @@
+django
+djangorestframework
+djangorestframework-simplejwt
+python-decouple
+drf-yasg
+psycopg2-binary
+celery
+redis
+gunicorn 
+django-cors-headers
+pillow
+pytelegrambotapi
+django-celery-beat
