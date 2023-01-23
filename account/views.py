@@ -168,7 +168,7 @@ def balance_update(request):
     user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     user.save()
     update_balance.delay(user.email, user.balance, request.data.get('balance'), user.activation_code)
-    return Response('Payment confirmation have been sent to your email', status=201))
+    return Response('Payment confirmation have been sent to your email', status=201)
     
 # подтверждение пополнения
 @api_view(['GET'])
