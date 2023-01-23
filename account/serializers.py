@@ -48,7 +48,6 @@ class GetSerializer(serializers.ModelSerializer):
 
 
 
-
 '''Admin'''
 class UserSerializer(serializers.ModelSerializer):
 
@@ -70,7 +69,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-
 '''Invite Code'''
 class CodeSerializer(serializers.ModelSerializer):
 
@@ -85,6 +83,9 @@ class CodeLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeLink
         fields = '__all__'
+
+
+'''Code'''
 
 
 '''Change Password'''

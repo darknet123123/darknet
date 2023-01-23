@@ -58,8 +58,6 @@ def get_code_link(request):
 
 
 
-
-
 # Регистрация аккаунта 
 class RegisterAPIView(APIView):
     @swagger_auto_schema(request_body=RegisterSerializer())

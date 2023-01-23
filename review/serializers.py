@@ -1,5 +1,8 @@
+from rest_framework.serializers import ModelSerializer
+
 from rest_framework import serializers
 from .models import Like, Rating, Comment, Reply, Favorite
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +42,7 @@ class ReplySerializer(serializers.ModelSerializer):
         model = Reply
         fields = ('id', 'user', 'comment', 'text')
 
-    def to_representation(self, instance):
+def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['user_username'] = instance.user.username
         representation['comment_text'] = instance.comment.text
