@@ -33,19 +33,12 @@ class Migration(migrations.Migration):
                 ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('email', models.EmailField(max_length=254, unique=True)),
-<<<<<<< HEAD
                 ('username', models.CharField(max_length=50)),
                 ('avatar', models.ImageField(blank=True, upload_to='')),
                 ('is_active', models.BooleanField(default=False)),
                 ('activation_code', models.CharField(blank=True, max_length=8)),
                 ('country', models.CharField(max_length=2)),
-=======
-                ('username', models.CharField(default='Anonymous User', max_length=50)),
-                ('avatar', models.ImageField(blank=True, upload_to='avatars/')),
-                ('is_active', models.BooleanField(default=False)),
-                ('activation_code', models.CharField(blank=True, max_length=8)),
-                ('country', models.CharField(default='World', max_length=2)),
->>>>>>> fc623b0b35eb74c2b672ec1d4bf77a002cae2b2f
+         
                 ('balance', models.DecimalField(decimal_places=2, default=10, max_digits=10)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
