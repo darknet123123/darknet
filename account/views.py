@@ -158,6 +158,7 @@ def password_confirm(request, activation_code, new_password):
 
 
 
+
 # пополнить баланс
 @api_view(['POST'])
 def balance_update(request):
