@@ -19,7 +19,6 @@ class Product(models.Model):
     description=models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category=models.ForeignKey(Category, on_delete=models.CASCADE,  related_name='product')
-    # quantity = models.PositiveIntegerField( null=True)
     quantity = models.PositiveIntegerField(verbose_name='quantity')
     warning=models.TextField()
     seller=models.ForeignKey(User, on_delete=models.CASCADE, related_name='product')
