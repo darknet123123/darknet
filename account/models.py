@@ -66,16 +66,6 @@ class User(AbstractUser):
             self.activation_code = code
             self.save()
 
-    @property
-    def average_rating(self):
-        ratings = self.ratings.all()
-        values = []
-        for rating in ratings:
-            values.append(rating.value)
-        if values:
-            return sum(values) / len(values)
-        return 0
-
 
 class Code(models.Model):
     code = models.CharField(max_length=10)

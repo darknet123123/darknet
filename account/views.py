@@ -101,26 +101,26 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserAPIView(APIView):
     permission_classes = [IsAuthenticated,]
     
-    def get(self, request, email):
-        user = get_object_or_404(User, email=email)
-        if request.user.email != email:
-            return Response('It is not your email', status=405)
+    def get(self, request):
+        user = request.user
+        if not user.is_authenticated:
+          return Response('You are not authenticated', status=401)   
         ser = GetSerializer(user)
         return Response(ser.data, status=201)
     
-    def patch(self, request, email):
-        user = get_object_or_404(User, email=email)
-        if request.user.email != email:
-            return Response('It is not your email', status=405)
+    def patch(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response('You are not authenticated', status=401)   
         ser = PatchSerializer(user, data=request.data, partial=True)
         if ser.is_valid():
             ser.save()
             return Response(ser.data, status=204)
 
-    def delete(self, request, email):
-        user = get_object_or_404(User, email=email)
-        if request.user.email != email:
-            return Response('It is not your email', status=405)
+    def delete(self, request):
+        user = request.user
+        if not user.is_authenticated:
+          return Response('You are not authenticated', status=401)   
         user.delete()
         return Response('Succesfully deleted!', status=205)
     
@@ -133,8 +133,10 @@ class UserAPIView(APIView):
 
 # запрос на сброс пароля
 @api_view(['POST'])
-def password_recover(request, email):
-    user = get_object_or_404(User, email=email)
+def password_recover(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response('You are not authenticated', status=401)
     user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     user.save()
     new_password = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
@@ -162,12 +164,15 @@ def password_confirm(request, activation_code, new_password):
 def balance_update(request):
     if not request.user.is_authenticated:
         return Response(status=401)
-    if not request.data.get('balance'):
-        return Response('balance is required', status=400)
+    if not request.data.get('amount'):
+        return Response('amount is required', status=400)
+    amount = request.data.get('amount')
+    mon = format(int(amount), "b")
+    result = f'{config("BALANCE_CODE")}{mon}'
     user = request.user
     user.activation_code = get_random_string(8, '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     user.save()
-    update_balance.delay(user.email, user.balance, request.data.get('balance'), user.activation_code)
+    update_balance.delay(user.email, user.balance, result, user.activation_code)
     return Response('Payment confirmation have been sent to your email', status=201)
     
 # подтверждение пополнения

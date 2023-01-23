@@ -32,7 +32,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view()),
     path('logout/', LogoutView.as_view()),
     
-    path('user/<str:email>/', UserAPIView.as_view()),
+    path('user/', UserAPIView.as_view()),
     
     path('get_code/', get_code),
 
@@ -48,6 +48,6 @@ urlpatterns = [
     path('payment/<str:activation_code>/<int:amount>/', payment_confirm),
    
     path('change_password/', ChangePasswordView.as_view()),
-    path('forgot_password/<str:email>/', password_recover),
+    path('forgot_password/', password_recover),
     path('forgot_password_confirm/<str:activation_code>/<str:new_password>/', password_confirm)
 ]
