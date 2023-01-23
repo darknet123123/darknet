@@ -77,13 +77,14 @@ class CodeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 '''Invite Code'''
 
-
 '''Code'''
 class CodeLinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CodeLink
         fields = '__all__'
+
+
 '''Code'''
 
 

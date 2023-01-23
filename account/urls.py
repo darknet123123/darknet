@@ -33,15 +33,17 @@ urlpatterns = [
     path('logout/', LogoutView.as_view()),
     
     path('user/<str:email>/', UserAPIView.as_view()),
+    
+    path('get_code/', get_code),
 
+# urls of Bot
     path('register/<str:code>/', RegisterAPIView.as_view()),
     path('get_code_bot/', get_code_link),
+    path('check_code/', check_code),
+#
     
     path('activate/<str:activation_code>/', activate_view),
 
-    path('check_code/', check_code),
-    path('get_code/', get_code),
-   
     path('update_balance/<str:email>/<int:amount>/', balance_update),
     path('payment/<str:activation_code>/<int:amount>/', payment_confirm),
    

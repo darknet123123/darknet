@@ -24,8 +24,7 @@ def check_answer(message):
     res = requests.post('http://127.0.0.1:8000/account/check_code/', {'code':message.text, 'bot_code':token})
     if res.status_code == 200:
         res = requests.get('http://127.0.0.1:8000/account/get_code_bot/')
-        print(dir(res))
-        bot.send_message(message.chat.id, f'http://127.0.0.1:8000/account/register/{res}')
+        bot.send_message(message.chat.id, f"""http://127.0.0.1:8000/account/register/{res.text.strip('"')}""")
         return
     
     if message.text.lower() == mythology_riddles[0]["answer"].lower():
