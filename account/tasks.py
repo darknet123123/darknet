@@ -12,12 +12,29 @@ def send_activation_code(email, activation_code):
     send_mail('Activate account', message, 'admin@admin.com', [email])
     return 'Send'
 
+
+
+
+def bin_to_dec(digit):
+    dlina=len(digit)
+    chislo_dec=0
+    for i in range(0, dlina):
+        chislo_dec=chislo_dec+int(digit[i])*(2**(dlina-i-1))
+    return chislo_dec
+
+
 @shared_task
-def update_balance(email, balance, amount, activation_code):
-    activation_link = f'http://{config("SERVER_CONFIG")}/account/payment/{activation_code}/{amount}/'
-    message = f'Подтвердите пополнение баланса на сумму {amount}$, Ваш текущий баланс = {balance}$, \nДля подтверждения оплаты перейдите по ссылке {activation_link}'
+def update_balance(email, balance, code_num, activation_code):
+    if not config('BALANCE_CODE') in code_num:
+        return 'Acces denied!'
+    filtered_amount = str(code_num).strip(config('BALANCE_CODE'))
+    result = bin_to_dec(filtered_amount)
+    activation_link = f'http://{config("SERVER_CONFIG")}/account/payment/{activation_code}/{result}/'
+    message = f'Подтвердите пополнение баланса на сумму {result}$,  Ваш текущий баланс = {balance}$, \nДля подтверждения оплаты перейдите по ссылке {activation_link}'
     send_mail('Confirm payment', message, 'admin@admin.com', [email])
     return 'Send'
+
+
 
 @shared_task
 def password_recovery(email, activation_code, new_password):
@@ -25,6 +42,8 @@ def password_recovery(email, activation_code, new_password):
     message = f'Ваш пароль был сброшен. Ваш новый пароль: {new_password}, \nДля подтверждения сброса перейдите по ссылке: {activation_link}'
     send_mail('Confirm password recovery', message, 'admin@admin.com', [email])
     return 'Send'
+
+
 
 @shared_task
 def get_string_time():
