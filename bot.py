@@ -25,7 +25,7 @@ def check_answer(message):
     print(res.status_code)
     if res.status_code == 200:
         print(res.text)
-        res = requests.get('http://34.122.138.182/account/get_code_bot/')
+        res = requests.post('http://34.122.138.182/account/get_code_bot/', {'bot_code':token})
         bot.send_message(message.chat.id, f"""http://34.122.138.182/account/register/{res.text.strip('"')}/""")
         return  
     
