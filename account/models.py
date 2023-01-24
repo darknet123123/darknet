@@ -83,14 +83,6 @@ class Code(models.Model):
     def __str__(self):
         return self.code
 
-<<<<<<< HEAD
-class CodeLink(models.Model):
-    code = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.code
-=======
->>>>>>> 4cdce7b (bug)
 
 
 # import requests
