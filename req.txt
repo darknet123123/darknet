@@ -9,5 +9,4 @@ redis
 gunicorn 
 django-cors-headers
 pillow
-pytelegrambotapi
-django-celery-beat
+python-telegram-bot

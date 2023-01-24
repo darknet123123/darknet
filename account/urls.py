@@ -6,7 +6,6 @@ from rest_framework_simplejwt.views import (
 from rest_framework.routers import DefaultRouter
 
 from .views import *
-from .tasks import get_string_time
 
 
 router = DefaultRouter()
@@ -34,12 +33,10 @@ urlpatterns = [
     
     path('user/<str:email>/', UserAPIView.as_view()),
 
-    path('register/<str:code>/', RegisterAPIView.as_view()),
-    path('get_code_bot/', get_code_link),
+    path('register/', RegisterAPIView.as_view()),
     
     path('activate/<str:activation_code>/', activate_view),
 
-    path('check_code/', check_code),
     path('get_code/', get_code),
    
     path('update_balance/<str:email>/<int:amount>/', balance_update),
