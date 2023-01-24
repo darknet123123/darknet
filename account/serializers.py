@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from config.settings import EMAIL_HOST_USER
-from .models import User, Code
+from .models import User, Code, CodeLink
 
 
 '''Register'''
@@ -48,13 +48,12 @@ class GetSerializer(serializers.ModelSerializer):
 
 
 
-
 '''Admin'''
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'avatar', 'country', 'balance', 'is_active', 'is_superuser', 'date_joined']
+        fields = ['id', 'email', 'username', 'password', 'avatar', 'country', 'balance', 'is_active', 'is_superuser', 'date_joined']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -70,7 +69,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-
 '''Invite Code'''
 class CodeSerializer(serializers.ModelSerializer):
 
@@ -79,7 +77,15 @@ class CodeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 '''Invite Code'''
 
+'''Code'''
+class CodeLinkSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = CodeLink
+        fields = '__all__'
+
+
+'''Code'''
 
 '''Change Password'''
 class ChangePasswordSerializer(serializers.Serializer):
