@@ -10,7 +10,7 @@ from .models import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics , viewsets, status
 from rest_framework import generics
-from .permissions import IsProductAuthor
+from drf_yasg.utils import swagger_auto_schema
 
 
 
