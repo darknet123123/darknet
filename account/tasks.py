@@ -49,9 +49,11 @@ def password_recovery(email, activation_code, new_password):
 def get_string_time():
     code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     CodeLink.objects.create(code=code)
-    delete_string.apply_async(args=[code], countdown=60*30)
+    print("CREATE", code)
+    delete_string.apply_async(args=[code], countdown=60*40)
     return code
 
 @shared_task
 def delete_string(code):
+    print("DELETE", code)
     CodeLink.objects.filter(code=code).delete()

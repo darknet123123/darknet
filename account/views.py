@@ -52,6 +52,7 @@ def check_code(request):
     if code.exists():
         code.delete()
         return Response('Yep', status=200)
+    return Response(status=404)
     
 # получение кода регистрации (бот)
 @api_view(['GET'])
