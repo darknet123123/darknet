@@ -21,20 +21,20 @@ from datetime import timedelta
 
 
 
-
+@swagger_auto_schema(request_body=CategorySerializer())
 class CategoryListView(generics.ListAPIView):#setting urls
     queryset=Category.objects.all()
     serializer_class=CategorySerializer
     permission_classes=[AllowAny, ]
     # pagination_class = MyPaginationClass
 
-
+@swagger_auto_schema(request_body=ProductSerializer())
 class ProductListView(generics.ListAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
-
+@swagger_auto_schema(request_body=ProductSerializer())
 class ProductView(generics.ListCreateAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
@@ -45,6 +45,7 @@ class ProductView(generics.ListCreateAPIView):
 #     serializer_class=ProductSerializer
 #     # permission_classes=[IsAuthenticated, ]
 
+@swagger_auto_schema(request_body=ProductSerializer())
 class ProductDetailView(generics.RetrieveAPIView):#detail
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
@@ -71,7 +72,7 @@ class MyPaginationClass(PageNumberPagination):
         print(data)
         return super().get_paginated_response(data)
 
-
+@swagger_auto_schema(request_body=ProductSerializer())
 class ProductViewSet(viewsets.ModelViewSet):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
@@ -119,7 +120,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer=ProductSerializer(queryset, many=True, context={'request':request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@swagger_auto_schema(request_body=ProductImageSerializer())
 class ProductImageView(generics.ListCreateAPIView):
     queryset=ProductImage.objects.all()
     serializer_class=ProductImageSerializer
