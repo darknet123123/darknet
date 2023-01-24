@@ -197,10 +197,12 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 
 '''Cache'''
-CACHE_MIDDLEWARE_ALIAS = 'default'
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
-CACHE_MIDDLEWARE_SECONDS = 1000
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR/'django_cache',
+    }
+}
 
 """CORS"""
 CORS_ALLOWED_ORIGINS = [
