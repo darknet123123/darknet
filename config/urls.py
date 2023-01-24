@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from main.views import *
+from auction.views import *
+from cart.views import *
 
+router=DefaultRouter()
+router.register('product', ProductViewSet)
+router.register('auction', AuctionViewSet)
 
 
 """=============Swagger docs============="""
@@ -37,8 +44,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('docs/', swagger_view.with_ui('swagger', cache_timeout=0)),
     path('account/', include('account.urls')),
+
+    path('auction/', include(router.urls)),
+    path('v1/api/',include(router.urls)),
+
     path('chat/', include('chat.urls')),    
-    path('review', include('review.urls')),
+    path('review/', include('review.urls')),
+    path('cart/', include('cart.urls')),
+    path('api/', include('auction.urls')),
 ]
 
 
