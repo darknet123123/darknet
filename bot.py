@@ -24,9 +24,11 @@ def check_answer(message):
     res = requests.post('http://34.122.138.182/account/check_code/', {'code':message.text, 'bot_code':token})
     print(res.status_code)
     if res.status_code == 200:
+        res = requests.get('http://34.122.138.182/account/get_code_bot/')
+        print(res)
         print(res.text)
-        res = requests.post('http://34.122.138.182/account/get_code_bot/', {'bot_code':token})
-        bot.send_message(message.chat.id, f"""http://34.122.138.182/account/register/{res.text.strip('"')}/""")
+        if res.status_code == 200:
+            bot.send_message(message.chat.id, f"""http://34.122.138.182/account/register/{res.text.strip('"')}/""")
         return  
     
     if message.text.lower() == mythology_riddles[0]["answer"].lower():
