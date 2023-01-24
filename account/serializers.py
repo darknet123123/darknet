@@ -87,7 +87,6 @@ class CodeLinkSerializer(serializers.ModelSerializer):
 
 '''Code'''
 
-
 '''Change Password'''
 class ChangePasswordSerializer(serializers.Serializer):
    
