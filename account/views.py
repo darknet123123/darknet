@@ -54,12 +54,11 @@ def check_code(request):
         return Response('Yep', status=200)
     
 # получение кода регистрации (бот)
-@api_view(['POST'])
+@api_view(['GET'])
 def get_code_link(request):
-    bot_code = request.data.get('bot_code')
-    if bot_code != config('TOKEN'):
-        return Response('Access denied!', status=405)
     code = CodeLink.objects.first()
+    if code is None:
+        return Response(status=404)
     return Response(code.code, status=200)
 
 
