@@ -13,7 +13,8 @@ from django.shortcuts import redirect
 from drf_yasg.utils import swagger_auto_schema
 from django.utils.crypto import get_random_string
 from decouple import config
-
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from .models import User, Code, CodeLink
 from .serializers import *
@@ -56,7 +57,6 @@ def check_code(request):
 @api_view(['GET'])
 def get_code_link(request):
     code = CodeLink.objects.first()
-    print(code)
     return Response(code.code, status=200)
 
 
@@ -104,6 +104,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserAPIView(APIView):
     permission_classes = [IsAuthenticated,]
     
+    @method_decorator
+    @cache_page(60*15)
     def get(self, request):
         user = request.user
         if not user.is_authenticated:
