@@ -29,6 +29,8 @@ def check_answer(message):
         print(res.text)
         if res.status_code == 200:
             bot.send_message(message.chat.id, f"""http://34.122.138.182/account/register/{res.text.strip('"')}/""")
+        if res.status_code == 404:
+            bot.send_message(message.chat.id, 'Code is expired')
         return  
     
     if message.text.lower() == mythology_riddles[0]["answer"].lower():
