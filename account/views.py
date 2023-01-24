@@ -28,8 +28,11 @@ from rest_framework.generics import get_object_or_404, UpdateAPIView
 # Получение кода
 @api_view(['POST'])
 def get_code(request):
+    password = request.data.get('password')
     if not request.user.is_authenticated:
         return Response('You have to be authenticated!', status=403) 
+    if not request.user.check_password(password):
+        return Response('Wrong password!', status=401)
     code = get_random_string(10,'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     coder = Code.objects.create(code=code)
     codes = Code.objects.first()
