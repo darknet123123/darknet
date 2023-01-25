@@ -25,7 +25,7 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['category']=CategorySerializer(instance.category).data
 
         representation['comments'] = CommentSerializer(instance.comments.all(), many=True).data
-        representation['rating'] = instance.average_rating
+        # representation['rating'] = instance.average_rating
         representation['favorite'] = instance.favorits.count()
         representation["likes"] = instance.likes.count()
         return representation
