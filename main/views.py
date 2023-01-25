@@ -10,60 +10,43 @@ from .models import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics , viewsets, status
 from rest_framework import generics
-from drf_yasg.utils import swagger_auto_schema
+from .permissions import IsProductAuthor
 
 
 
 
 from django.utils import timezone
 from datetime import timedelta
-from .permissions import *
   
 
 
 
-@swagger_auto_schema(request_body=CategoryProductSerializer())
+
 class CategoryListView(generics.ListAPIView):#setting urls
     queryset=Category.objects.all()
-    serializer_class=CategoryProductSerializer
+    serializer_class=CategorySerializer
     permission_classes=[AllowAny, ]
     # pagination_class = MyPaginationClass
 
-@swagger_auto_schema(request_body=ProductSerializer())
+
 class ProductListView(generics.ListAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
-@swagger_auto_schema(request_body=ProductSerializer())
+
 class ProductView(generics.ListCreateAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
-# class ProductCreateView(generics.CreateAPIView):
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-#     # permission_classes=[IsAuthenticated, ]
 
-@swagger_auto_schema(request_body=ProductSerializer())
 class ProductDetailView(generics.RetrieveAPIView):#detail
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
 
-# class ProductdetailView(generics.RetrieveUpdateAPIView):#detail
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-
-# class ProductUpdateView(generics.UpdateAPIView):#put, patch
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-
-# class ProductDeleteView(generics.DestroyAPIView):#delete
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
 
 from rest_framework.pagination import PageNumberPagination
 
@@ -73,7 +56,7 @@ class MyPaginationClass(PageNumberPagination):
         print(data)
         return super().get_paginated_response(data)
 
-@swagger_auto_schema(request_body=ProductSerializer())
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
@@ -121,3 +104,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer=ProductSerializer(queryset, many=True, context={'request':request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+# class ProductImageView(generics.ListCreateAPIView):
+#     queryset=ProductImage.objects.all()
+#     serializer_class=ProductImageSerializer
+
+#     def get_serializer_context(self):
+#         return {'request':self.request}
