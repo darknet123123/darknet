@@ -120,10 +120,3 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer=ProductSerializer(queryset, many=True, context={'request':request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-@swagger_auto_schema(request_body=ProductImageSerializer())
-class ProductImageView(generics.ListCreateAPIView):
-    queryset=ProductImage.objects.all()
-    serializer_class=ProductImageSerializer
-
-    def get_serializer_context(self):
-        return {'request':self.request}

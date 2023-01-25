@@ -9,13 +9,6 @@ from .models import *
 
 from .models import *
 
-class ProductImageInline(admin.TabularInline):
-    model=ProductImage
-    max_num=3
-    
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    inlines=[ProductImageInline, ]
+admin.site.register(Product)
 
 admin.site.register(Category)
