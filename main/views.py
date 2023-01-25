@@ -22,10 +22,10 @@ from .permissions import *
 
 
 
-@swagger_auto_schema(request_body=CategorySerializer())
+@swagger_auto_schema(request_body=CategoryProductSerializer())
 class CategoryListView(generics.ListAPIView):#setting urls
     queryset=Category.objects.all()
-    serializer_class=CategorySerializer
+    serializer_class=CategoryProductSerializer
     permission_classes=[AllowAny, ]
     # pagination_class = MyPaginationClass
 

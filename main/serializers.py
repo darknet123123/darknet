@@ -4,7 +4,7 @@ from .models import *
 
 from review.serializers import *
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryProductSerializer(serializers.ModelSerializer):
     class Meta:
         model=Category
         fields="__all__"
@@ -22,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
         print(instance)
         representation = super().to_representation(instance)
         representation['seller']=instance.seller.email
-        representation['category']=CategorySerializer(instance.category).data
+        representation['category']=CategoryProductSerializer(instance.category).data
 
         representation['comments'] = CommentSerializer(instance.comments.all(), many=True).data
         # representation['rating'] = instance.average_rating
