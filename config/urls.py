@@ -52,6 +52,9 @@ urlpatterns = [
     path('review/', include('review.urls')),
     path('cart/', include('cart.urls')),
     path('api/', include('auction.urls')),
+    path('hello/', include('main.urls')),
+    
+
 ]
 
 
