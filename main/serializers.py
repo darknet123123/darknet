@@ -15,7 +15,7 @@ class ProductSerializer(serializers.ModelSerializer):
     created_at=serializers.DateTimeField(format="%d/%m/%Y  %H:%M:%S", read_only=True)
     class Meta:
         model = Product
-        fields = ('id', 'title', 'description','price','category','quantity', 'created_at', 'warning')
+        fields = ('id', 'title', 'image','description','price','category','quantity', 'created_at', 'warning')
         # fields='__all__'
     
     def to_representation(self, instance):
@@ -23,11 +23,10 @@ class ProductSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['seller']=instance.seller.email
         representation['category']=CategorySerializer(instance.category).data
-        representation['images'] = ProductImageSerializer(instance.images.all(), many=True, context=self.context).data
 
         representation['comments'] = CommentSerializer(instance.comments.all(), many=True).data
         representation['rating'] = instance.average_rating
-        representation['favourite'] = instance.favourites.count()
+        representation['favorite'] = instance.favorits.count()
         representation["likes"] = instance.likes.count()
         return representation
 

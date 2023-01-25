@@ -21,14 +21,14 @@ def send_riddle(message):
 
 @bot.message_handler(content_types=['text'])
 def check_answer(message):
-    res = requests.post('http://34.122.138.182/account/check_code/', {'code':message.text, 'bot_code':token})
+    res = requests.post('http://127.0.0.1:8000/account/check_code/', {'code':message.text, 'bot_code':token})
     print(res.status_code)
     if res.status_code == 200:
-        res = requests.get('http://34.122.138.182/account/get_code_bot/')
+        res = requests.get('http://127.0.0.1:8000/account/get_code_bot/')
         print(res)
         print(res.text)
         if res.status_code == 200:
-            bot.send_message(message.chat.id, f"""http://34.122.138.182/account/register/{res.text.strip('"')}/""")
+            bot.send_message(message.chat.id, f"""http://127.0.0.1:8000/account/register/{res.text.strip('"')}/""")
         if res.status_code == 404:
             bot.send_message(message.chat.id, 'Code is expired')
         return  
