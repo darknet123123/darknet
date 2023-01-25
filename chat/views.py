@@ -19,14 +19,14 @@ def room(request, room):
 
 def checkview(request):
     room = request.POST['room_name']
-    username = request.POST['username']
+    # username = request.POST['username']
 
     if not Room.objects.filter(name=room).exists():
         if Room.objects.count() >  10:
             return HttpResponse(status=400)
         new_room = Room.objects.create(name=room)
         new_room.save()
-    return redirect(room+'/?username='+username)
+    return redirect(room+'/?username')
 
 
 def send(request):
@@ -40,5 +40,5 @@ def send(request):
 
 def getMessages(request, room):
     room_details = get_object_or_404(Room , name=room)
-    messages = Message.objects.filter(room=room_details.id)
+    messages = Message.objects.filter(room=room_details)
     return JsonResponse({"messages":list(messages.values())})
