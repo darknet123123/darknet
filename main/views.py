@@ -41,29 +41,12 @@ class ProductView(generics.ListCreateAPIView):
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
-# class ProductCreateView(generics.CreateAPIView):
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-#     # permission_classes=[IsAuthenticated, ]
-
 @swagger_auto_schema(request_body=ProductSerializer())
 class ProductDetailView(generics.RetrieveAPIView):#detail
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     permission_classes=[AllowAny, ]
 
-
-# class ProductdetailView(generics.RetrieveUpdateAPIView):#detail
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-
-# class ProductUpdateView(generics.UpdateAPIView):#put, patch
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
-
-# class ProductDeleteView(generics.DestroyAPIView):#delete
-#     queryset=Product.objects.all()
-#     serializer_class=ProductSerializer
 
 from rest_framework.pagination import PageNumberPagination
 

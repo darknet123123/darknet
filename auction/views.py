@@ -55,7 +55,6 @@ class AuctionViewSet(viewsets.ModelViewSet):
     permission_classes=[IsAuthenticated ]
     pagination_class=MyPaginationClass
 
-#TODO delete update author не работают
 
     def get_permissions(self):
         print(self.action)
@@ -105,8 +104,6 @@ class AuctionImageView(generics.ListCreateAPIView):
     def get_serializer_context(self):
         return {'request':self.request}
 
-
-'--------------------------------------------------------------------------------'
 class AuctionUserView(generics.ListAPIView):
     queryset=Bid.objects.all()
     serializer_class=BidSerializer
